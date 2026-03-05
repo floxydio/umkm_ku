@@ -83,4 +83,30 @@ class DebtDao extends DatabaseAccessor<AppDatabase> with _$DebtDaoMixin {
   Future<List<DebtData>> getUnsyncedDebts() {
     return (select(debtsTable)..where((t) => t.isSynced.equals(false))).get();
   }
+
+  Future<List<DebtPaymentData>> getUnsyncedPayments() {
+    return (select(debtPaymentsTable)
+          ..where((t) => t.isSynced.equals(false)))
+        .get();
+  }
+
+  Future<void> markDebtsSynced(List<String> ids) async {
+    await (update(debtsTable)..where((t) => t.id.isIn(ids))).write(
+      const DebtsTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> markPaymentsSynced(List<String> ids) async {
+    await (update(debtPaymentsTable)..where((t) => t.id.isIn(ids))).write(
+      const DebtPaymentsTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> upsertDebtFromRemote(DebtsTableCompanion entry) {
+    return into(debtsTable).insertOnConflictUpdate(entry);
+  }
+
+  Future<void> upsertPaymentFromRemote(DebtPaymentsTableCompanion entry) {
+    return into(debtPaymentsTable).insertOnConflictUpdate(entry);
+  }
 }

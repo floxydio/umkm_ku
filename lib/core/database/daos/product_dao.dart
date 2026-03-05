@@ -85,4 +85,8 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
       ),
     );
   }
+
+  Future<void> upsertFromRemote(ProductsTableCompanion entry) {
+    return into(productsTable).insertOnConflictUpdate(entry);
+  }
 }

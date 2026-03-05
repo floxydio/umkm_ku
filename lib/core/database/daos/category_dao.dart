@@ -45,4 +45,14 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
           ..where((t) => t.isSynced.equals(false)))
         .get();
   }
+
+  Future<void> markSynced(List<String> ids) async {
+    await (update(categoriesTable)..where((t) => t.id.isIn(ids))).write(
+      const CategoriesTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> upsertFromRemote(CategoriesTableCompanion entry) {
+    return into(categoriesTable).insertOnConflictUpdate(entry);
+  }
 }

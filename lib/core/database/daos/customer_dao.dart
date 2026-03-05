@@ -66,4 +66,14 @@ class CustomerDao extends DatabaseAccessor<AppDatabase>
           ..where((t) => t.isSynced.equals(false)))
         .get();
   }
+
+  Future<void> markSynced(List<String> ids) async {
+    await (update(customersTable)..where((t) => t.id.isIn(ids))).write(
+      const CustomersTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> upsertFromRemote(CustomersTableCompanion entry) {
+    return into(customersTable).insertOnConflictUpdate(entry);
+  }
 }

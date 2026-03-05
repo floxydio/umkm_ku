@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../debt/presentation/bloc/debt_bloc.dart';
+import '../../../debt/presentation/pages/customer_list_page.dart';
 import '../../../pos/presentation/pages/pos_page.dart';
 import '../../../product/presentation/bloc/product_bloc.dart';
 import '../../../product/presentation/pages/product_list_page.dart';
@@ -52,6 +54,20 @@ class HomePage extends StatelessWidget {
                     builder: (_) => BlocProvider(
                       create: (_) => getIt<ProductBloc>(),
                       child: const ProductListPage(),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                icon: const Icon(Icons.account_balance_wallet_outlined),
+                label: const Text('Hutang Pelanggan'),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => getIt<DebtBloc>(),
+                      child: const CustomerListPage(),
                     ),
                   ),
                 ),

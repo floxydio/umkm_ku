@@ -37,4 +37,8 @@ class StockDao extends DatabaseAccessor<AppDatabase> with _$StockDaoMixin {
       ),
     );
   }
+
+  Future<void> upsertFromRemote(StockLogsTableCompanion entry) {
+    return into(stockLogsTable).insertOnConflictUpdate(entry);
+  }
 }

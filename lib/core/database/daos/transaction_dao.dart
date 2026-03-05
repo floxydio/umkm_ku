@@ -98,4 +98,18 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
       ),
     );
   }
+
+  Future<void> markItemsSynced(List<String> ids) async {
+    await (update(transactionItemsTable)..where((t) => t.id.isIn(ids))).write(
+      const TransactionItemsTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> upsertTransactionFromRemote(TransactionsTableCompanion entry) {
+    return into(transactionsTable).insertOnConflictUpdate(entry);
+  }
+
+  Future<void> upsertItemFromRemote(TransactionItemsTableCompanion entry) {
+    return into(transactionItemsTable).insertOnConflictUpdate(entry);
+  }
 }

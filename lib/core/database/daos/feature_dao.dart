@@ -46,4 +46,14 @@ class FeatureDao extends DatabaseAccessor<AppDatabase> with _$FeatureDaoMixin {
           ..where((t) => t.isSynced.equals(false)))
         .get();
   }
+
+  Future<void> markSynced(List<String> ids) async {
+    await (update(purchasedFeaturesTable)..where((t) => t.id.isIn(ids))).write(
+      const PurchasedFeaturesTableCompanion(isSynced: Value(true)),
+    );
+  }
+
+  Future<void> upsertFromRemote(PurchasedFeaturesTableCompanion entry) {
+    return into(purchasedFeaturesTable).insertOnConflictUpdate(entry);
+  }
 }
